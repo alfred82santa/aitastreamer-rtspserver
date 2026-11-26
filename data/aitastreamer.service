@@ -1,0 +1,12 @@
+[Unit]
+Description=Aita Streamer RTSP service
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+User=aitastreamer
+ExecStart=/usr/bin/rtsp-server -c /etc/aita.conf
+
+[Install]
+WantedBy=multi-user.target

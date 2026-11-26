@@ -1,0 +1,20 @@
+mountPoints:
+  /test:
+    launchPipeline: videotestsrc ! video/x-raw,width=1920,height=1080 ! queue  ! videoconvert ! x264enc ! h264parse ! queue ! mpegtsmux name=mux ! tsparse set-timestamps=true ! rtpmp2tpay name=pay0 pt=96 pulsesrc ! queue ! audio/x-raw ! avenc_aac ! aacparse ! queue ! mux.
+    shared: true
+
+  /test-video:
+    launchPipeline: videotestsrc ! video/x-raw,width=1920,height=1080,framerate=24/1 ! queue ! videoconvert ! v4l2h264enc ! h264parse ! queue ! mpegtsmux ! tsparse set-timestamps=true ! rtpmp2tpay name=pay0 pt=96
+    shared: true
+
+  /only-audio:
+    launchPipeline: pulsesrc ! queue ! audio/x-raw ! avenc_aac ! aacparse ! queue ! rtpmp4apay name=pay0 pt=96
+    shared: true
+
+  /picamera:
+    launchPipeline: libcamerasrc ! video/x-raw,width=1920,height=1080 ! v4l2convert ! v4l2h264enc extra-controls="encode,controls,repeat_sequence_header=1" ! video/x-h264,level=(string)4 ! h264parse ! queue ! mpegtsmux name=mux ! tsparse set-timestamps=true ! rtpmp2tpay name=pay0 pt=96 pulsesrc ! queue ! audio/x-raw ! avenc_aac ! aacparse ! queue ! mux.
+    shared: true
+
+  /picamera-only:
+    launchPipeline: libcamerasrc ! video/x-raw,width=1920,height=1080,framerate=25/1 ! queue ! v4l2convert ! queue ! v4l2h264enc ! video/x-h264,level=(string)5.1 ! queue ! mpegtsmux ! tsparse set-timestamps=true ! queue ! rtpmp2tpay name=pay0 pt=96
+    shared: true
